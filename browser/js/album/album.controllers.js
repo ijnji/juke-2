@@ -17,7 +17,14 @@ juke.controller('AlbumCtrl', function ($scope, $http, $rootScope, $log, StatsFac
     $scope.album = album;
     StatsFactory.totalTime(album)
     .then(function(albumDuration) {
-      $scope.fullDuration = albumDuration;
+      var hr = Math.floor(albumDuration / 3600);
+      var mm = Math.floor((albumDuration - (hr * 3600))/ 60);
+      var ss = Math.floor(albumDuration % 60);
+      $scope.fullDuration = '(' +
+                            (hr > 0 ? hr + ' hrs ' : '') +
+                            (mm > 0 ? mm + ' min ' : '') +
+                            (ss > 0 ? ss + ' sec' : '') +
+                            ')';
     });
   })
   .catch($log.error); // $log service can be turned on and off; also, pre-bound
@@ -29,7 +36,7 @@ juke.controller('AlbumCtrl', function ($scope, $http, $rootScope, $log, StatsFac
     } else if (song === PlayerFactory.getCurrentSong()) {
       PlayerFactory.resume();
     } else {
-      PlayerFactory.start(song);
+      PlayerFactory.start(song, $scope.album.songs);
     }
   };
 
@@ -45,12 +52,16 @@ juke.controller('AlbumCtrl', function ($scope, $http, $rootScope, $log, StatsFac
 
 
 
-juke.controller('AlbumsCtrl', function($scope, AlbumFactory) {
+juke.controller('AlbumsCtrl', function($scope, $rootScope, AlbumFactory) {
   AlbumFactory.fetchAll()
   .then(function(albums) {
     $scope.albums = albums;
     albums.forEach(function(album) {
       album.imageUrl = '/api/albums/' + album.id + '/image';
     });
+  });
+
+  $rootScope.$on('showAllAlbums', function() {
+    $scope.showMe = true;
   });
 });

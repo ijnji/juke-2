@@ -7,27 +7,29 @@
     <link href="/style.css" rel="stylesheet" />
     <script src="/angular/angular.js" defer></script>
     <script src="/js/module.js" defer></script>
-    <script src="/js/album/album.controllers.js" defer></script>
-    <script src="/js/player/player.controller.js" defer></script>
-    <script src="/js/player/player.factory.js" defer></script>
+    <!-- <script src="/js/sidebar/sidebar.factory.js" defer></script> -->
+    <script src="/js/sidebar/sidebar.controller.js" defer></script>
     <script src="/js/album/album.factory.js" defer></script>
+    <script src="/js/album/album.controllers.js" defer></script>
+    <script src="/js/player/player.factory.js" defer></script>
+    <script src="/js/player/player.controller.js" defer></script>
   </head>
   <body ng-app="juke">
     <div id="main" class="container-fluid">
 
       <div class="col-xs-2">
-        <sidebar>
+        <sidebar ng-controller="SidebarCtrl">
           <img src="juke.svg" class="logo">
           <section>
             <h4 class="menu-item active">
-              <a href="#">ALBUMS</a>
+              <a ng-click="showAlbums()" href="#">ALBUMS</a>
             </h4>
           </section>
         </sidebar>
       </div>
 
       <div class="col-xs-10">
-        <div class="album" ng-controller="AlbumCtrl" ng-show="true">
+        <div ng-show="false" class="album" ng-controller="AlbumCtrl">
           <p>
             <h3>{{ album.name }} {{ fullDuration }}</h3>
             <img ng-src="{{ album.imageUrl }}" class="img-thumbnail">
@@ -56,7 +58,7 @@
           </table>
         </div>
 
-        <div ng-show="false" ng-controller="AlbumsCtrl">
+        <div ng-show=showMe ng-controller="AlbumsCtrl">
           <h3>Albums</h3>
           <div class="row">
             <div class="col-xs-4" ng-repeat="album in albums">
@@ -76,12 +78,12 @@
       </div>
 
       <footer>
-        <div ng-show="currentSong" ng-controller="PlayerCtrl">
+        <div ng-show="currentSong()" ng-controller="PlayerCtrl">
           <div class="pull-left">
             <button class="btn btn-default" ng-click="prev()">
               <span class="glyphicon glyphicon-step-backward"></span>
             </button>
-            <button class="btn btn-default" ng-click="toggle(currentSong)">
+            <button class="btn btn-default" ng-click="toggle()">
               <span class="glyphicon" ng-class="{'glyphicon-pause': playing(), 'glyphicon-play': !playing()}"></span>
             </button>
             <button class="btn btn-default" ng-click="next()">
@@ -90,7 +92,7 @@
           </div>
           <div class="bar">
             <div class="progress" ng-click="handleProgressClick($event)">
-              <div class="progress-bar" ng-style="{width: progress + '%'}"></div>
+              <div class="progress-bar" ng-style="{width: getProgress() + '%'}"></div>
             </div>
           </div>
         </div>

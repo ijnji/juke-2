@@ -15,13 +15,11 @@ juke.controller('PlayerCtrl', function ($scope, $rootScope, PlayerFactory) {
   // });
 
   // main toggle
-  $scope.toggle = function (song) {
-    if (song === PlayerFactory.getCurrentSong() && PlayerFactory.isPlaying()) {
+  $scope.toggle = function () {
+    if ($scope.playing()) {
       PlayerFactory.pause();
-    } else if (song === PlayerFactory.getCurrentSong()) {
-      PlayerFactory.resume();
     } else {
-      PlayerFactory.start(song, $scope.album.songs);
+      PlayerFactory.resume();
     }
   };
 
@@ -32,7 +30,7 @@ juke.controller('PlayerCtrl', function ($scope, $rootScope, PlayerFactory) {
 
   // outgoing events (to Album… or potentially other characters)
   $scope.next = function(){
-    return PlayerFactory.next();
+    PlayerFactory.next();
   };
   $scope.prev = function(){
     return PlayerFactory.previous();
@@ -44,9 +42,13 @@ juke.controller('PlayerCtrl', function ($scope, $rootScope, PlayerFactory) {
     return PlayerFactory.getCurrentSong();
   };
 
+  $scope.getProgress = function() {
+    return PlayerFactory.getProgress();
+  };
+
   function seek (decimal) {
     audio.currentTime = audio.duration * decimal;
-  }
+  };
 
   $scope.handleProgressClick = function (evt) {
     seek(evt.offsetX / evt.currentTarget.scrollWidth);

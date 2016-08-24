@@ -8,6 +8,11 @@ juke.factory('PlayerFactory', function($rootScope){
 
   playerObj.audio = document.createElement('audio');
 
+  playerObj.audio.addEventListener('timeupdate', function() {
+    playerObj.progress = 100 * playerObj.audio.currentTime / playerObj.audio.duration;
+    $rootscope.$evalasync();
+  });
+
   playerObj.start = function(song, songList) {
     if(songList) {
       this.songList = songList;
@@ -59,7 +64,8 @@ juke.factory('PlayerFactory', function($rootScope){
   };
   playerObj.getProgress = function() {
     if (!this.currentSong) return 0;
-    return this.audio.currentTime / this.audio.duration;
+    return this.progress;
   };
+
   return playerObj;
 });
