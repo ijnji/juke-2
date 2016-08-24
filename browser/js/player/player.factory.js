@@ -4,14 +4,14 @@ juke.factory('PlayerFactory', function($rootScope){
   var playerObj = {};
 
   // State
-  playerObj.currentSong;
   playerObj.playing = false;
-  playerObj.songList;
 
   playerObj.audio = document.createElement('audio');
 
   playerObj.start = function(song, songList) {
-    this.songList = songList;
+    if(songList) {
+      this.songList = songList;
+    }
 
     // stop existing audio (e.g. other song) in any case
     this.pause();
@@ -22,7 +22,7 @@ juke.factory('PlayerFactory', function($rootScope){
 
     // enable loading new song
     this.currentSong = song;
-    this.audio.src = song.audioUrl;
+    this.audio.src = song.url;
     this.audio.load();
     this.audio.play();
   };
@@ -44,18 +44,18 @@ juke.factory('PlayerFactory', function($rootScope){
     return this.currentSong;
   };
   playerObj.next = function() {
-    this.pause();
     if (!this.songList) return;
+    this.pause();
     var i = this.songList.indexOf(this.currentSong) + 1;
     if (i > this.songList.length - 1) i = 0;
-    this.start(this.songList[i], this.songList);
+    this.start(this.songList[i]);
   };
   playerObj.previous = function() {
-    this.pause();
     if (!this.songList) return;
+    this.pause();
     var i = this.songList.indexOf(this.currentSong) - 1;
     if (i < 0) i = this.songList.length - 1;
-    this.start(this.songList[i], this.songList);
+    this.start(this.songList[i]);
   };
   playerObj.getProgress = function() {
     if (!this.currentSong) return 0;
